@@ -1,0 +1,19 @@
+{
+  "manifest_version": 3,
+  "description": "ニコニコ動画のページからNNDD-REアプリを操作する拡張機能",
+  "permissions": [],
+  "host_permissions": ["https://www.nicovideo.jp/*"],
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.nicovideo.jp/watch/*",
+        "https://www.nicovideo.jp/mylist/*",
+        "https://www.nicovideo.jp/my/mylist/*",
+        "https://www.nicovideo.jp/user/*/mylist/*"
+      ],
+      "js": ["src/content/nicovideo.ts"],
+      "css": ["src/content/nicovideo.css"],
+      "run_at": "document_idle"
+    }
+  ]
+}

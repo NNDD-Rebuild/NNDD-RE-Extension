@@ -1,0 +1,23 @@
+{
+  "name": "nndd-re-extension",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev:chrome": "vite build --watch --mode chrome",
+    "dev:firefox": "vite build --watch --mode firefox",
+    "build:chrome": "vite build --mode chrome",
+    "build:firefox": "vite build --mode firefox",
+    "build": "npm run build:chrome && npm run build:firefox",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/chrome": "^0.0.280",
+    "typescript": "^5.6.3",
+    "vite": "^5.4.11",
+    "vite-plugin-web-extension": "^4.4.3"
+  },
+  "dependencies": {
+    "webextension-polyfill": "^0.12.0"
+  }
+}

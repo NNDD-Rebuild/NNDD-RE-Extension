@@ -1,0 +1,103 @@
+#nndd-re-ext-root {
+  display: flex;
+  gap: 8px;
+  margin: 8px 0;
+}
+
+#nndd-re-ext-root.nndd-re-ext-inline {
+  align-items: center;
+  margin: 0 8px 0 0;
+  flex: 0 0 auto;
+}
+
+#nndd-re-ext-root.nndd-re-ext-floating {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 2147483647;
+  flex-direction: column;
+}
+
+/* ------------------------------------------------------------------
+ * 動画アクションバーの幅確保
+ * ボタン群を包む要素は flex-shrink:1 + overflow:hidden で、既存ボタンに
+ * ぴったりの幅しか持たない。ボタンを1個足しただけで三点メニューが右端で
+ * 切り落とされるため、包み要素を縮まないようにし、その分の幅をコメント
+ * 入力欄から貰う (実測で 40px 相当 = 入力欄 380px → 346px)。
+ * atomicクラス名は不安定なため、祖先はボタン挿入時にJS側でクラスを付けて特定する。
+ * ------------------------------------------------------------------ */
+.nndd-re-ext-actions-wrap {
+  flex-shrink: 0 !important;
+}
+
+.nndd-re-ext-actions-bar > :nth-child(2) {
+  min-width: 0 !important;
+  overflow: hidden !important;
+}
+
+/* 視聴ページ: 共有と三点の間に置く40pxの丸アイコン */
+.nndd-re-ext-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: none;
+  border-radius: 9999px;
+  background: #252525;
+  color: #fff;
+  font-size: 12px;
+  font-weight: bold;
+  font-family: inherit;
+  line-height: 1;
+  cursor: pointer;
+  flex: 0 0 auto;
+}
+
+.nndd-re-ext-trigger:hover {
+  background: #454545;
+}
+
+.nndd-re-ext-menu {
+  position: fixed;
+  z-index: 2147483647;
+  display: flex;
+  flex-direction: column;
+  min-width: 180px;
+  padding: 4px;
+  border-radius: 8px;
+  background: #2c2c2c;
+  box-shadow: 0 4px 16px rgb(0 0 0 / 45%);
+}
+
+.nndd-re-ext-menu-item {
+  display: block;
+  padding: 10px 12px;
+  border-radius: 4px;
+  color: #fff;
+  font-size: 13px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.nndd-re-ext-menu-item:hover {
+  background: #454545;
+}
+
+/* マイリストページ等の通常ボタン */
+.nndd-re-ext-button {
+  display: inline-block;
+  padding: 6px 12px;
+  background: #252525;
+  color: #fff;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: bold;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.nndd-re-ext-button:hover {
+  background: #454545;
+}
