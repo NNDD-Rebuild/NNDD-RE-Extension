@@ -6,7 +6,6 @@ function generateManifest(target: 'chrome' | 'firefox') {
   const base = readJsonFile('src/manifest.json');
   const manifest = {
     ...base,
-    name: pkg.name,
     version: pkg.version
   };
 
