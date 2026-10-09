@@ -1,0 +1,32 @@
+NNDD-RE Extension — ビルド手順（レビュアー向け）
+
+■ 必要環境
+- Node.js（package.json の devDependencies に対応するバージョン。18以降推奨）
+- npm
+
+■ ビルド手順
+1. 依存パッケージをインストール
+   npm install
+
+2. Firefox向けにビルド
+   npm run build:firefox
+
+3. ビルド成果物は dist/firefox/ に出力される
+   これが実際に配布・提出している拡張機能のソース一式（トランスパイル・バンドル済み）と一致する
+
+■ 使用しているビルドツール
+- Vite（vite build）
+  TypeScript（src/content/nicovideo.ts）のトランスパイルと、
+  拡張機能用マニフェストの生成（src/manifest.json をベースに package.json の
+  version を注入し、Firefox向けには browser_specific_settings を追加）を行う
+- vite-plugin-web-extension
+  Vite で Web Extension をビルドするためのプラグイン
+
+■ ソース構成
+- src/manifest.json      … マニフェストのベース定義
+- src/content/nicovideo.ts … コンテンツスクリプト本体
+- src/content/nicovideo.css … コンテンツスクリプト用スタイル
+- public/icons/          … 拡張機能アイコン
+- vite.config.ts         … ビルド設定（マニフェスト生成ロジックを含む）
+- tsconfig.json          … TypeScript設定
+- package.json / package-lock.json … 依存関係定義

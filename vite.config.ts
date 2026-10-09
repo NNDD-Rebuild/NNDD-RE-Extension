@@ -11,7 +11,12 @@ function generateManifest(target: 'chrome' | 'firefox') {
 
   if (target === 'firefox') {
     manifest.browser_specific_settings = {
-      gecko: { id: 'nndd-re-extension@nndd-rebuild' }
+      gecko: {
+        id: 'nndd-re-extension@nndd-rebuild',
+        data_collection_permissions: {
+          required: ['none']
+        }
+      }
     };
   }
 

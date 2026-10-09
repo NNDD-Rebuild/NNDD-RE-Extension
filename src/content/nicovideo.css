@@ -59,6 +59,17 @@
   background: #454545;
 }
 
+/* 生放送ページ: 番組メニューの <li> 群に相乗りする28px丸アイコン */
+#nndd-re-ext-root.nndd-re-ext-live {
+  list-style: none;
+}
+
+.nndd-re-ext-trigger--live {
+  width: 28px;
+  height: 28px;
+  font-size: 10px;
+}
+
 .nndd-re-ext-menu {
   position: fixed;
   z-index: 2147483647;

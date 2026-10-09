@@ -7,6 +7,7 @@ console.log('[NNDD-RE Ext] content script loaded on', location.href);
 type PageInfo =
   | { kind: 'watch'; videoId: string }
   | { kind: 'mylist'; mylistId: string }
+  | { kind: 'live'; liveId: string }
   | null;
 
 function parsePage(url: string): PageInfo {
@@ -16,10 +17,13 @@ function parsePage(url: string): PageInfo {
   const mylistMatch = url.match(/\/(?:my\/)?mylist\/(\d+)/) ?? url.match(/\/user\/\d+\/mylist\/(\d+)/);
   if (mylistMatch) return { kind: 'mylist', mylistId: mylistMatch[1] };
 
+  const liveMatch = url.match(/^https:\/\/live\.nicovideo\.jp\/watch\/(lv\d+)/);
+  if (liveMatch) return { kind: 'live', liveId: liveMatch[1] };
+
   return null;
 }
 
-function buildCmdUrl(action: 'play' | 'download' | 'mylist', id: string): string {
+function buildCmdUrl(action: 'play' | 'download' | 'mylist' | 'live' | 'liveRecord', id: string): string {
   return `${CMD_SCHEME}://${action}/${id}`;
 }
 
@@ -147,6 +151,22 @@ function findMylistAnchor(): Anchor | null {
   return el ? { el, position: 'beforeend' } : null;
 }
 
+// 生放送ページは番組タイトル下の <ul> (タイムシフト予約/X共有/共有/その他の操作 の
+// 4つの <li>) に相乗りする。クラス名はPanda CSS系atomicクラスで不安定なため、
+// aria-label (安定した日本語ラベル) から「その他の操作」ボタンの祖先 <li> を辿り、
+// その直前 = 共有とその他の間に置く。
+function findLiveAnchor(): Anchor | null {
+  const extraBtn = document.querySelector('button[aria-label="その他の操作"]');
+  const extraLi = extraBtn?.closest('li');
+  if (extraLi) return { el: extraLi, position: 'beforebegin' };
+
+  const shareBtn = document.querySelector('button[aria-label="共有"]');
+  const shareLi = shareBtn?.closest('li');
+  if (shareLi) return { el: shareLi, position: 'afterend' };
+
+  return null;
+}
+
 function renderButtons(container: HTMLElement, buttons: HTMLElement[]): void {
   container.replaceChildren(...buttons);
 }
@@ -185,7 +205,8 @@ function doMount(): void {
     closeMenu();
     document.getElementById(BUTTON_ROOT_ID)?.remove();
 
-    const root = document.createElement('div');
+    // 生放送ページの挿入先は <ul><li>...</li></ul> 構造のため、root自体を <li> にする。
+    const root = document.createElement(info.kind === 'live' ? 'li' : 'div');
     root.id = BUTTON_ROOT_ID;
 
     let anchor: Anchor | null = null;
@@ -212,6 +233,24 @@ function doMount(): void {
     } else if (info.kind === 'mylist') {
       renderButtons(root, [makeButton('NNDD-REで開く', buildCmdUrl('mylist', info.mylistId))]);
       anchor = findMylistAnchor();
+    } else if (info.kind === 'live') {
+      root.classList.add('nndd-re-ext-live');
+      const trigger = makeTrigger();
+      trigger.classList.add('nndd-re-ext-trigger--live');
+      trigger.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (openMenuEl) {
+          closeMenu();
+          return;
+        }
+        openMenuFor(trigger, [
+          makeMenuItem('NNDD-REで視聴', buildCmdUrl('live', info.liveId)),
+          makeMenuItem('NNDD-REで録画', buildCmdUrl('liveRecord', info.liveId))
+        ]);
+      });
+      renderButtons(root, [trigger]);
+      anchor = findLiveAnchor();
     }
 
     if (anchor) {

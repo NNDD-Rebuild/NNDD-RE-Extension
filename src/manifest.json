@@ -8,14 +8,15 @@
     "128": "icons/icon-128.png"
   },
   "permissions": [],
-  "host_permissions": ["https://www.nicovideo.jp/*"],
+  "host_permissions": ["https://www.nicovideo.jp/*", "https://live.nicovideo.jp/*"],
   "content_scripts": [
     {
       "matches": [
         "https://www.nicovideo.jp/watch/*",
         "https://www.nicovideo.jp/mylist/*",
         "https://www.nicovideo.jp/my/mylist/*",
-        "https://www.nicovideo.jp/user/*/mylist/*"
+        "https://www.nicovideo.jp/user/*/mylist/*",
+        "https://live.nicovideo.jp/watch/*"
       ],
       "js": ["src/content/nicovideo.ts"],
       "css": ["src/content/nicovideo.css"],
