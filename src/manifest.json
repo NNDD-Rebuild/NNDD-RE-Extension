@@ -1,14 +1,22 @@
 {
   "manifest_version": 3,
   "name": "NNDD-RE",
-  "description": "ニコニコ動画のページからNNDD-REアプリを操作する拡張機能",
+  "description": "ニコニコ動画のページからNNDD-REアプリを操作する拡張機能。ブラウザのログイン情報を NNDD(旧版)に渡すこともできます",
   "icons": {
     "16": "icons/icon-16.png",
     "48": "icons/icon-48.png",
     "128": "icons/icon-128.png"
   },
-  "permissions": [],
-  "host_permissions": ["https://www.nicovideo.jp/*", "https://live.nicovideo.jp/*"],
+  "permissions": [
+    "cookies",
+    "storage"
+  ],
+  "host_permissions": [
+    "https://www.nicovideo.jp/*",
+    "https://live.nicovideo.jp/*",
+    "http://127.0.0.1/*",
+    "https://account.nicovideo.jp/*"
+  ],
   "content_scripts": [
     {
       "matches": [
@@ -18,9 +26,35 @@
         "https://www.nicovideo.jp/user/*/mylist/*",
         "https://live.nicovideo.jp/watch/*"
       ],
-      "js": ["src/content/nicovideo.ts"],
-      "css": ["src/content/nicovideo.css"],
+      "js": [
+        "src/content/nicovideo.ts"
+      ],
+      "css": [
+        "src/content/nicovideo.css"
+      ],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": [
+        "https://www.nicovideo.jp/*"
+      ],
+      "js": [
+        "src/content/login.ts"
+      ],
       "run_at": "document_idle"
     }
-  ]
+  ],
+  "action": {
+    "default_title": "NNDD にログイン",
+    "default_popup": "src/popup/popup.html",
+    "default_icon": {
+      "16": "icons/icon-16.png",
+      "48": "icons/icon-48.png",
+      "128": "icons/icon-128.png"
+    }
+  },
+  "background": {
+    "service_worker": "src/background.ts",
+    "type": "module"
+  }
 }

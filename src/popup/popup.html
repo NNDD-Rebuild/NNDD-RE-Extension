@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>NNDD にログイン</title>
+    <link rel="stylesheet" href="./popup.css" />
+  </head>
+  <body>
+    <h1>NNDD にログイン</h1>
+    <p class="note">
+      このブラウザでログインしているニコニコ動画のセッション(user_session)を、同じPCで動いている NNDD に送ります。
+    </p>
+
+    <ol class="steps">
+      <li>NNDD を起動し、ログイン画面を開く</li>
+      <li>ログイン画面に表示された「コード」を下に入力する</li>
+      <li>「NNDD に送る」を押す</li>
+    </ol>
+
+    <label>
+      コード(6桁)
+      <input id="code" type="text" inputmode="numeric" maxlength="6" autocomplete="off" />
+    </label>
+
+    <details>
+      <summary>詳細設定</summary>
+      <label>
+        NNDD のログイン受付ポート
+        <input id="port" type="number" min="1" max="65535" value="12301" />
+      </label>
+    </details>
+
+    <button id="send" type="button">NNDD に送る</button>
+
+    <p id="nndd-status" class="status" role="status"></p>
+    <p id="result" class="result" role="status"></p>
+
+    <script type="module" src="./popup.ts"></script>
+  </body>
+</html>

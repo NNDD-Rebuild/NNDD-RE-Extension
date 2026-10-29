@@ -10,6 +10,10 @@ function generateManifest(target: 'chrome' | 'firefox') {
   };
 
   if (target === 'firefox') {
+    // Firefox は background.service_worker に対応していないので scripts で指定する
+    if (manifest.background?.service_worker) {
+      manifest.background = { scripts: [manifest.background.service_worker], type: 'module' };
+    }
     manifest.browser_specific_settings = {
       gecko: {
         id: 'nndd-re-extension@nndd-rebuild',
