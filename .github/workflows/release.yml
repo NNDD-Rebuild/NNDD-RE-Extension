@@ -1,0 +1,39 @@
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - name: Check tag matches package.json version
+        run: test "v$(node -p "require('./package.json').version")" = "$GITHUB_REF_NAME"
+      - run: npm run build
+      - name: Create zips
+        run: |
+          v="${GITHUB_REF_NAME#v}"
+          mkdir -p dist-zip
+          (cd dist/chrome && zip -qr "../../dist-zip/nndd-re-extension-chrome-v$v.zip" .)
+          (cd dist/firefox && zip -qr "../../dist-zip/nndd-re-extension-firefox-v$v.zip" .)
+          zip -qr "dist-zip/nndd-re-extension-source-v$v.zip" public src BUILD_INSTRUCTIONS.txt package.json package-lock.json tsconfig.json vite.config.ts
+      - name: Publish release assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
+            gh release upload "$GITHUB_REF_NAME" dist-zip/*.zip --clobber
+          else
+            gh release create "$GITHUB_REF_NAME" dist-zip/*.zip --title "$GITHUB_REF_NAME" --generate-notes
+          fi
